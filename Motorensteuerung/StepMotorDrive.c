@@ -16,9 +16,26 @@
  * keit angeben. 
  * 
  */
-void walkLeft(int steps, bool fast) {
+
+/*
+ * Anzahl Schritte, welche vom Raspberry pi kommen
+ * werden verarbeitet. Fortbewegung auf die linke
+ * Seite. 
+ * 
+ * @param int steps
+ * @param bool fast
+ */
+void walkLeft(int steps, bool fast) {   
 ;
 }
+/*
+ * Anzahl Schritte, welche vom Raspberry pi kommen
+ * werden verarbeitet. Fortbewegung auf die rechte Seite
+ * Seite. 
+ * 
+ * @param int steps
+ * @param bool fast
+ */
 void walkRight(int steps, bool fast){
 ;
 }

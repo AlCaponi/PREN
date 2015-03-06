@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Pren_Motors
+PROJECTNAME=Motorensteuerung
 
 # Active Configuration
 DEFAULTCONF=Debug

@@ -40,7 +40,7 @@ void setup() {
     //Serial.println("move -");
     //stepper.move(-200);
     //delay(1000);
-  stepper.move(1000,FORWARD);
+  stepper.move(1000, BACKWARD);
   Serial.println("sleepOn");
   stepper.sleepON();                      // set Sleep mode ON  
   delay(1000);

@@ -11,11 +11,13 @@ int rollingValue=0;
 
 boolean positionVonRechtsAnfahren = false;
 String orientation;
+int initialSteps;
 //Global stepper variables
 
 //AH_Pololu(int RES, int DIR, int STEP, int MS1, int MS2, int MS3, int SLEEP, int ENABLE, int RESET);
-AH_Pololu stepper(200,13,12,8,7,6,11,9,10);
-
+AH_Pololu mover_stepper(200,13,12,8,7,6,11,9,10);
+// TODO: Stepper PIN configuration 
+AH_Pololu shooter_stepper(200,13,12,8,7,6,11,9,10);
 
 
 //*******************************************INIT*******************************************************/
@@ -28,7 +30,29 @@ void setup(){
   InitInfraredSensor();
   
   // Stepper Enginer Initialisation
-  InitStepper();
+  InitStepper(mover_stepper);
+  InitStepper(shooter_stepper
+  
+  // Read arguments from Raspberry PI
+  String startupDirection = "";
+  while (startupDirection == ""){
+    if (Serial.available())  {
+        startupDirection = Serial.read():
+        delay(1000);
+    }
+  }
+  orientation = startupDirection;
+  
+  // Read initial steps from Raspberry PI 
+  String startupSteps = "";
+  while (startupSteps == ""){
+    if (Serial.available())  {
+        startupSteps = Serial.read():
+        delay(1000);
+    }
+  }
+  initialSteps = startupSteps;
+
   
 }
 
@@ -42,7 +66,7 @@ void InitInfraredSensor(){
 }
 
 // Initialises the stepper
-void InitStepper(){
+void InitStepper(AH_Pololu stepper){
   stepper.sleepON(); 
 
   stepper.resetDriver();                
@@ -71,15 +95,21 @@ void InitStepper(){
 void loop(){
   readInfraredSensor();
   moveStepper(120, "LEFT");
+  fire();
+}
+
+void fire(){
+  // TODO: Herausfinden wie viele Schritte nötigen sind für eine Umdrehung
+  shooter_stepper.move(1000);
 }
 
 // Moves stepper in direction with steps
 void moveStepper(int steps, String dir){
   if(dir == "LEFT"){
-    stepper.move(steps, BACKWARD);
+    mover_stepper.move(steps, BACKWARD);
   }
   else {
-    stepper.move(steps, FORWARD);
+    mover_stepper.move(steps, FORWARD);
   }
   
 }

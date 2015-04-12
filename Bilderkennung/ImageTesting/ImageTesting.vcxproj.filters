@@ -102,5 +102,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="PropertySheet.props" />
+    <None Include="app.config" />
   </ItemGroup>
 </Project>

@@ -184,7 +184,8 @@ Mat defineROI(Mat myImage)
 void imageProcessing()
 {
 	/// Load source image and convert it to gray
-	src = imread("Korb_Mitte.png", 1);
+	//String picture = Configuration::Configuration::AppSettings->get_Item("name");
+	src = imread("Korb_Mitte", 1);
 
 	// Definiert Range of Interest (Begrenzt Bild auf das Spielfeld)
 	// Mat roi(src, Rect(bild_start_x, bild_start_y, bild_length_x, bild_height_y));

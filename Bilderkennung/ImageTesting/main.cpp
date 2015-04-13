@@ -4,9 +4,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include "tinyxml2.h"
+#include <Windows.h>
 
 using namespace cv;
 using namespace std;
+using namespace tinyxml2;
+
 
 // Threshold Algorithm
 int thresh = 100;
@@ -26,12 +30,34 @@ Mat src, src_gray, dst, threshold_output;
 double alpha;
 int beta;
 
-// roi size
-int bild_start_x = 40;
-int bild_start_y = 90;
-int bild_length_x = 270;
-int bild_height_y = 100;
+tinyxml2::XMLDocument xmldoc;
+String picName;
 
+int aPosX = 40;
+int aPosY = 60;
+
+int bPosX = 250;
+int bPosY = 60;
+
+int cPosX = 250;
+int cPosY = 180;
+
+int dPosX = 40;
+int dPosY = 180;
+
+// roi size
+int bild_start_x = aPosX - 2;
+int bild_start_y = aPosY - 2;
+int bild_length_x = bPosX - aPosX + 4;
+int bild_height_y = cPosY - aPosY + 4;
+
+int length_x = bPosX - aPosX;
+int steps;
+char* direction;
+string hotspot = "Hello";
+const char* myLink;
+
+void openURL(String richtung, int schritte);
 
 void thresh_callback(int, void*)
 {
@@ -82,26 +108,23 @@ void thresh_callback(int, void*)
 
 			printf("Abfalleimer - X = %f - Y = %f - Length: %.2f\n", x, y, arcLength(contours[i], true));
 
-			if (x < bild_length_x / 2)
+			if (x < length_x / 2)
 			{
-				printf("Fahre links");
-
-				if (x >(bild_length_x / 2 - 10))
-				{
-					printf(" (aber nur ein wenig)");
-				}
+				steps = (length_x / 2 - x);
+				direction = "left";
+				printf("Direction : Left\t");
+				printf("Steps : %d", steps);
 			}
 			else
 			{
-				printf("Fahre rechts");
-
-				if (x < (bild_length_x / 2 + 10))
-				{
-					printf(" (aber nur ein wenig)");
-				}
+				steps = (x - length_x / 2);
+				direction = "right";
+				printf("Direction : Right\t");
+				printf("Steps : %d", steps);
 			}
 		}
 	}
+	openURL(direction, steps);
 }
 
 Mat brightenPicture(Mat myImage)
@@ -133,20 +156,20 @@ Mat defineROI(Mat myImage)
 	vector<Point> ROI_Vertices;
 
 	Point a;
-	a.x = 40;
-	a.y = 80;
+	a.x = aPosX;
+	a.y = aPosY;
 
 	Point b;
-	b.x = 250;
-	b.y = 80;
+	b.x = bPosX;
+	b.y = bPosY;
 
 	Point c;
-	c.x = 250;
-	c.y = 200;
+	c.x = cPosX;
+	c.y = cPosY;
 
-	Point d = (200, 200);
-	d.x = 40;
-	d.y = 200;
+	Point d;
+	d.x = dPosX;
+	d.y = dPosY;
 
 	ROI_Vertices.push_back(a);
 	ROI_Vertices.push_back(b);
@@ -184,8 +207,9 @@ Mat defineROI(Mat myImage)
 void imageProcessing()
 {
 	/// Load source image and convert it to gray
-	//String picture = Configuration::Configuration::AppSettings->get_Item("name");
-	src = imread("Korb_Mitte", 1);
+	//String picture = ConfigurationManager.AppSettings["picture"];
+	
+	src = imread(picName, 1);
 
 	// Definiert Range of Interest (Begrenzt Bild auf das Spielfeld)
 	// Mat roi(src, Rect(bild_start_x, bild_start_y, bild_length_x, bild_height_y));
@@ -195,11 +219,16 @@ void imageProcessing()
 
 	src = defineROI(src);
 
+	//Test
+	Mat roi(src, Rect(bild_start_x, bild_start_y, bild_length_x, bild_height_y));
+	roi = brightenPicture(roi);
+	//Test
+
 	// Möglicherweise unnötig, da neu ROI
 	src = brightenPicture(src);
 
 	/// Macht das Bild komplett Schwarz/Weiss
-	cvtColor(src, src_gray, CV_BGR2GRAY);
+	cvtColor(roi, src_gray, CV_BGR2GRAY);
 
 	blur(src_gray, src_gray, Size(3, 3));
 	threshold(src_gray, threshold_output, 53, max_BINARY_value, 0);
@@ -209,14 +238,103 @@ void imageProcessing()
 	/// Create Window to show result
 	char* source_window = "Source";
 	namedWindow(source_window, CV_WINDOW_AUTOSIZE);
-	imshow(source_window, src);
+	imshow(source_window, roi);
 
 	// Threshold Algorithmus
 	thresh_callback(0, 0);
 }
 
+void writeXMLFile()
+{
+	XMLNode* pRoot = xmldoc.NewElement("Root");
+	xmldoc.InsertFirstChild(pRoot);
+
+	XMLElement* pElement = xmldoc.NewElement("IntValue");
+	pElement->SetText(10);
+	pRoot->InsertEndChild(pElement);
+
+	pElement = xmldoc.NewElement("FloatValue");
+	pElement->SetText(0.5f);
+
+	pRoot->InsertEndChild(pElement);
+
+	pElement = xmldoc.NewElement("Date");
+	pElement->SetAttribute("day", 26);
+	pElement->SetAttribute("month", "April");
+	pElement->SetAttribute("year", 2014);
+	pElement->SetAttribute("dateFormat", "26/04/2014");
+
+	pRoot->InsertEndChild(pElement);
+
+	XMLError eResult = xmldoc.SaveFile("SavedData.xml");
+}
+
+void loadXMLFile()
+{
+	XMLError eResult = xmldoc.LoadFile("config.xml");
+	waitKey(0);
+}
+
+void readXMLFileExample()
+{
+	XMLNode* pRoot = xmldoc.FirstChild();
+	XMLElement * pElement = pRoot->FirstChildElement("IntValue");
+	int iOutInt;
+	XMLError eResult = pElement->QueryIntText(&iOutInt);
+
+	pElement = pRoot->FirstChildElement("FloatValue");
+
+	float fOutFloat;
+	eResult = pElement->QueryFloatText(&fOutFloat);
+
+	pElement = pRoot->FirstChildElement("Date");
+
+	int iOutDay, iOutYear;
+
+	eResult = pElement->QueryIntAttribute("day", &iOutDay);
+
+	eResult = pElement->QueryIntAttribute("year", &iOutYear);
+
+	const char * szAttributeText = nullptr;
+
+	szAttributeText = pElement->Attribute("month");
+	std::string strOutMonth = szAttributeText;
+	szAttributeText = pElement->Attribute("dateFormat");
+	std::string strOutFormat = szAttributeText;
+}
+
+void readXMLFile()
+{
+	XMLNode* pRoot = xmldoc.FirstChild();
+	XMLElement * pElement = pRoot->FirstChildElement("Config");
+	const char * tempName = nullptr;
+	tempName = pElement->Attribute("picName");
+	picName = tempName;
+	tempName = pElement->Attribute("hotspot");
+	hotspot = tempName;
+	waitKey(0);
+}
+
+void openURL(String richtung, int schritte)
+{
+	String demoLink;
+	String http = "http://";
+	String server = hotspot;
+	String filler = "/startProgramm.php?direction=";
+	String filler2 = "&steps=";
+	String schritt = to_string(schritte);
+
+	demoLink = http + server + filler + direction + filler2 + schritt;
+	myLink = demoLink.c_str();
+
+	ShellExecute(NULL, "Open", myLink, NULL, NULL, 1);
+}
+
 int main()
 {
+	loadXMLFile();
+	readXMLFile();
+
 	imageProcessing();
 
 	waitKey(0);

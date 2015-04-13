@@ -18,10 +18,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h">
+    <ClInclude Include="BrightenPicture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BrightenPicture.h">
+    <ClInclude Include="..\..\..\..\..\..\..\..\Documents\Visual Studio 2013\Projects\XMLParser\tinyxml2-master\tinyxml2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,12 +53,6 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Korb_Mitte.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="GetCurrentPicture1.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="GetCurrentPicture1BW.png">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="TestPic2.png">
@@ -99,9 +93,8 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="PropertySheet.props" />
-    <None Include="app.config" />
+    <ClCompile Include="..\..\..\..\..\..\..\..\Documents\Visual Studio 2013\Projects\XMLParser\tinyxml2-master\tinyxml2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

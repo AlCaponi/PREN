@@ -21,7 +21,7 @@
     <ClInclude Include="BrightenPicture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\..\..\Documents\Visual Studio 2013\Projects\XMLParser\tinyxml2-master\tinyxml2.h">
+    <ClInclude Include="tinyxml2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -93,7 +93,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\..\..\Documents\Visual Studio 2013\Projects\XMLParser\tinyxml2-master\tinyxml2.cpp">
+    <ClCompile Include="tinyxml2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

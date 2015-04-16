@@ -199,8 +199,6 @@ Mat defineROI(Mat myImage)
 	//image->copyTo(imageDest, mask);
 	myImage.copyTo(imageDest, mask);
 
-	imwrite("ImageDest.png", imageDest);
-
 	return imageDest;
 }
 
@@ -232,8 +230,6 @@ void imageProcessing()
 
 	blur(src_gray, src_gray, Size(3, 3));
 	threshold(src_gray, threshold_output, 53, max_BINARY_value, 0);
-
-	imwrite("BW-Pic.png", threshold_output);
 
 	/// Create Window to show result
 	char* source_window = "Source";

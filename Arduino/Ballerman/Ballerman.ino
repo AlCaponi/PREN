@@ -113,11 +113,14 @@ void loop(){
 
 void fire(){
   // TODO: Herausfinden wie viele Schritte nötigen sind für eine Umdrehung
+  int momentanSteps=0;
+  int rampeSteps=5;
   for(int rampe=60; rampe<=120; rampe+= 5){
+      momentanSteps+=rampeSteps;
       shooter_stepper.setSpeedRPM(rampe);
-      shooter_stepper.move(100);      // move 1000 steps
+      shooter_stepper.move(rampeSteps);      // move 1000 steps
     }
-  shooter_stepper.move(800);
+  shooter_stepper.move(2000-momentanSteps);
 }
 
 // Moves stepper in direction with steps
@@ -138,8 +141,11 @@ void moveStepper(int steps, String dir){
     int momentanSteps=0;
     int rampeSteps=5;
     for(int rampe=60;rampe<=120;rampe+=5){
-      mover_stepper.setSpeedRPM(rampe);
-      mover_stepper.move(rampeSteps, FORWARD);
+      momentanSteps+=rampeSteps;
+      if(momentanSteps!=steps){
+        mover_stepper.setSpeedRPM(rampe);
+        mover_stepper.move(rampeSteps, FORWARD);
+      }
     }
     mover_stepper.move((steps-momentanSteps),FORWARD); // Überprüft ob alle erhaltene Schritte abgearbeitet sind, falls dies nicht zutrifft werden diese noch abgearbeitet.
   }

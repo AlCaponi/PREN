@@ -1,6 +1,6 @@
 #include <Average.h>
 #include <AH_Pololu.h>
- 
+
 //*******************************************GLOBAL DECLARATION******************************************/
 
 //Global variables infrared sensor
@@ -12,6 +12,8 @@ int rollingValue=0;
 boolean positionVonRechtsAnfahren = false;
 String orientation;
 int initialSteps;
+boolean firstLoop = true;
+
 //Global stepper variables
 
 //AH_Pololu(int RES, int DIR, int STEP, int MS1, int MS2, int MS3, int SLEEP, int ENABLE, int RESET);
@@ -42,7 +44,6 @@ void setup(){
   Serial.println("Begin direction Init");
   String startupDirection = "";
   while (startupDirection == ""){
-
     if (Serial.available() > 0)  {
         startupDirection = Serial.readStringUntil('\n');
         delay(1000);
@@ -106,18 +107,23 @@ void InitStepper(AH_Pololu stepper){
 //***********************************************MAIN***************************************************/
 
 void loop(){
-  readInfraredSensor();
-  moveStepper(120, "LEFT");
-  fire();
+  
+  if(firstLoop){
+    moveStepper(initialSteps, orientation);    
+    firstLoop = false;
+  }
+  if(readInfraredSensor()){
+    fire();
+  }
+  else{
+    moveStepper(10, orientation);
+  }
+  
 }
 
 void fire(){
   // TODO: Herausfinden wie viele Schritte nötigen sind für eine Umdrehung
-  for(int rampe=60; rampe<=120; rampe+= 5){
-      shooter_stepper.setSpeedRPM(rampe);
-      shooter_stepper.move(100);      // move 1000 steps
-    }
-  shooter_stepper.move(800);
+  shooter_stepper.move(1000);
 }
 
 // Moves stepper in direction with steps

@@ -135,31 +135,26 @@ void fire(){
 
 // Moves stepper in direction with steps
 void moveStepper(int steps, String dir){
-  if(dir == "LEFT"){
-    int momentanSteps=0;  //Enthält die bereits abgearbeiteten Schritte
-    int rampeSteps=5;     // Anzahl Schritte die er pro Rampenschritt macht
-    for(int rampe=60;rampe<=120;rampe+=5){// Schrittmotor mit Rampe ansteuern
+  int momentanSteps=0; //Bereits absolvierte Schritte
+  int rampeSteps=10;   // Anzahl Schritte pro Rampenfunktion
+  for(int rampe=60; rampe<=120;rampe+=5){
+    if(momentanSteps<=steps){ //Abgefangen ob alle Schritte bereits gemacht wurden
       momentanSteps+=rampeSteps;
-      if(momentanSteps!=steps){
-        mover_stepper.setSpeedRPM(rampe);
-        mover_stepper.move(rampeSteps, BACKWARD);
+      shooter_stepper.setSpeedRPM(rampe); //Geschwindikeit setzen
+      if(dir=="LEFT"){
+        mover_stepper.move(rampeSteps,BACKWARD);
+        if((rampe==120)&&!(momentanSteps==steps){
+          mover_stepper.move((steps-momentanSteps),BACKWARD);
+        }
+      }
+      else{
+        mover_stepper.move(rampeSteps,FORWARD);
+        if((rampe==120)&&!(momentanSteps==steps){
+          mover_stepper.move((steps-momentanSteps),FORWARD);
+        }
       }
     }
-    mover_stepper.move((steps-momentanSteps),BACKWARD); // Überprüft ob alle erhaltene Schritte abgearbeitet sind, falls dies nicht zutrifft werden diese noch abgearbeitet.
   }
-  else {
-    int momentanSteps=0;
-    int rampeSteps=5;
-    for(int rampe=60;rampe<=120;rampe+=5){
-      momentanSteps+=rampeSteps;
-      if(momentanSteps!=steps){
-        mover_stepper.setSpeedRPM(rampe);
-        mover_stepper.move(rampeSteps, FORWARD);
-      }
-    }
-    mover_stepper.move((steps-momentanSteps),FORWARD); // Überprüft ob alle erhaltene Schritte abgearbeitet sind, falls dies nicht zutrifft werden diese noch abgearbeitet.
-  }
-  
 }
 
 // Reads the current distance from infrared sensor and returns true if basket has been detected

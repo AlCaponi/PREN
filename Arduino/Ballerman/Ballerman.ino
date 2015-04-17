@@ -1,6 +1,6 @@
 #include <Average.h>
 #include <AH_Pololu.h>
-
+ 
 //*******************************************GLOBAL DECLARATION******************************************/
 
 //Global variables infrared sensor
@@ -31,13 +31,13 @@ void setup(){
   
   // Stepper Enginer Initialisation
   InitStepper(mover_stepper);
-  InitStepper(shooter_stepper
+  InitStepper(shooter_stepper);
   
   // Read arguments from Raspberry PI
   String startupDirection = "";
   while (startupDirection == ""){
     if (Serial.available())  {
-        startupDirection = Serial.read():
+        startupDirection = Serial.read();
         delay(1000);
     }
   }
@@ -47,7 +47,7 @@ void setup(){
   String startupSteps = "";
   while (startupSteps == ""){
     if (Serial.available())  {
-        startupSteps = Serial.read():
+        startupSteps = Serial.read();
         delay(1000);
     }
   }
@@ -100,7 +100,11 @@ void loop(){
 
 void fire(){
   // TODO: Herausfinden wie viele Schritte nötigen sind für eine Umdrehung
-  shooter_stepper.move(1000);
+  for(int rampe=60; rampe<=120; rampe+= 5){
+      shooter_stepper.setSpeedRPM(rampe);
+      shooter_stepper.move(100);      // move 1000 steps
+    }
+  shooter_stepper.move(800);
 }
 
 // Moves stepper in direction with steps

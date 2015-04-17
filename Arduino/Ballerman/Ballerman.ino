@@ -31,23 +31,23 @@ void setup(){
   
   // Stepper Enginer Initialisation
   InitStepper(mover_stepper);
-  InitStepper(shooter_stepper
+  InitStepper(shooter_stepper);
   
   // Read arguments from Raspberry PI
   String startupDirection = "";
   while (startupDirection == ""){
-    if (Serial.available())  {
-        startupDirection = Serial.read():
+    if (Serial.available() > 0)  {
+        startupDirection = Serial.readStringUntil('\n');
         delay(1000);
     }
   }
   orientation = startupDirection;
   
   // Read initial steps from Raspberry PI 
-  String startupSteps = "";
-  while (startupSteps == ""){
-    if (Serial.available())  {
-        startupSteps = Serial.read():
+  int startupSteps = 0;
+  while (startupSteps == 0){
+    if (Serial.available() > 0)  {
+        startupSteps = Serial.parseInt();
         delay(1000);
     }
   }

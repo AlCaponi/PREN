@@ -25,34 +25,46 @@ AH_Pololu shooter_stepper(200,13,12,8,7,6,11,9,10);
 void setup(){
   // Set Baud rate
   Serial.begin(9600);
+  Serial.println("Begin Setup");
   
   // Infrared Initialisation
+  Serial.println("Begin Infrared Init");
   InitInfraredSensor();
+  Serial.println("End Infrared Init");
   
   // Stepper Enginer Initialisation
+  Serial.println("Begin Stepper Init");
   InitStepper(mover_stepper);
   InitStepper(shooter_stepper);
+  Serial.println("End Stepper Init");
   
   // Read arguments from Raspberry PI
+  Serial.println("Begin direction Init");
   String startupDirection = "";
   while (startupDirection == ""){
     if (Serial.available() > 0)  {
         startupDirection = Serial.readStringUntil('\n');
         delay(1000);
+        Serial.println("Direction found" + startupDirection);
     }
   }
   orientation = startupDirection;
+  Serial.println("End direction Init");
   
   // Read initial steps from Raspberry PI 
+  Serial.println("Begin Step Init");
   int startupSteps = 0;
   while (startupSteps == 0){
     if (Serial.available() > 0)  {
         startupSteps = Serial.parseInt();
+         Serial.println("Found Steps " + startupSteps);
         delay(1000);
     }
   }
   initialSteps = startupSteps;
-
+  Serial.println("End Step Init");
+  
+  Serial.println("End Setup");
   
 }
 

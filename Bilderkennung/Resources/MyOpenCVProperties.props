@@ -3,8 +3,8 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <ExecutablePath>C:\Program Files (x86)\OpenCV\opencv\build\x86\vc12\bin;$(ExecutablePath)</ExecutablePath>
-    <LibraryPath>C:\Program Files (x86)\OpenCV\opencv\build\x86\vc12\lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(OPENCV_DIR)\x86\vc12\bin;$(ExecutablePath)</ExecutablePath>
+    <LibraryPath>$(OPENCV_DIR)\x86\vc12\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

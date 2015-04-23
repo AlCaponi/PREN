@@ -11,24 +11,15 @@ using namespace cv;
 using namespace std;
 using namespace tinyxml2;
 
-
-// Threshold Algorithm
-int thresh = 100;
-int max_thresh = 255;
+//Random Number for Color
 RNG rng(12345);
 
-int threshold_value = 50;
-int threshold_type = 0;
-int const max_value = 255;
-int const max_type = 4;
-int const max_BINARY_value = 255;
-
-// Pictures
+//Pictures
 Mat src, src_gray, dst, threshold_output;
 
 // brightenPicture
-double alpha;
-int beta;
+double alpha = 0;
+int beta = 0;
 
 tinyxml2::XMLDocument xmldoc;
 String picName;
@@ -204,32 +195,25 @@ Mat defineROI(Mat myImage)
 
 void imageProcessing()
 {
-	/// Load source image and convert it to gray
-	//String picture = ConfigurationManager.AppSettings["picture"];
-	
+	// Liest Bild ein
 	src = imread(picName, 1);
 
-	// Definiert Range of Interest (Begrenzt Bild auf das Spielfeld)
-	// Mat roi(src, Rect(bild_start_x, bild_start_y, bild_length_x, bild_height_y));
-
-	// Macht das Bild ein wenig heller (Schatten rausfiltern wenn möglich)
-	//roi = brightenPicture(roi);
-
+	// Schneidet Bild auf Grösse aus
 	src = defineROI(src);
 
-	//Test
+	// Grauer Rand um Bild wird erstellt
 	Mat roi(src, Rect(bild_start_x, bild_start_y, bild_length_x, bild_height_y));
+
+	// Bild wird erhellt
 	roi = brightenPicture(roi);
-	//Test
 
-	// Möglicherweise unnötig, da neu ROI
-	src = brightenPicture(src);
-
-	/// Macht das Bild komplett Schwarz/Weiss
+	/// Macht das Bild grau
 	cvtColor(roi, src_gray, CV_BGR2GRAY);
 
+	// Glättet Bild
 	blur(src_gray, src_gray, Size(3, 3));
-	threshold(src_gray, threshold_output, 53, max_BINARY_value, 0);
+	// Macht das Bild komplett Schwarz/Weiss
+	threshold(src_gray, threshold_output, 53, 255, 0);
 
 	/// Create Window to show result
 	char* source_window = "Source";
@@ -240,63 +224,10 @@ void imageProcessing()
 	thresh_callback(0, 0);
 }
 
-void writeXMLFile()
-{
-	XMLNode* pRoot = xmldoc.NewElement("Root");
-	xmldoc.InsertFirstChild(pRoot);
-
-	XMLElement* pElement = xmldoc.NewElement("IntValue");
-	pElement->SetText(10);
-	pRoot->InsertEndChild(pElement);
-
-	pElement = xmldoc.NewElement("FloatValue");
-	pElement->SetText(0.5f);
-
-	pRoot->InsertEndChild(pElement);
-
-	pElement = xmldoc.NewElement("Date");
-	pElement->SetAttribute("day", 26);
-	pElement->SetAttribute("month", "April");
-	pElement->SetAttribute("year", 2014);
-	pElement->SetAttribute("dateFormat", "26/04/2014");
-
-	pRoot->InsertEndChild(pElement);
-
-	XMLError eResult = xmldoc.SaveFile("SavedData.xml");
-}
-
 void loadXMLFile()
 {
 	XMLError eResult = xmldoc.LoadFile("config.xml");
 	waitKey(0);
-}
-
-void readXMLFileExample()
-{
-	XMLNode* pRoot = xmldoc.FirstChild();
-	XMLElement * pElement = pRoot->FirstChildElement("IntValue");
-	int iOutInt;
-	XMLError eResult = pElement->QueryIntText(&iOutInt);
-
-	pElement = pRoot->FirstChildElement("FloatValue");
-
-	float fOutFloat;
-	eResult = pElement->QueryFloatText(&fOutFloat);
-
-	pElement = pRoot->FirstChildElement("Date");
-
-	int iOutDay, iOutYear;
-
-	eResult = pElement->QueryIntAttribute("day", &iOutDay);
-
-	eResult = pElement->QueryIntAttribute("year", &iOutYear);
-
-	const char * szAttributeText = nullptr;
-
-	szAttributeText = pElement->Attribute("month");
-	std::string strOutMonth = szAttributeText;
-	szAttributeText = pElement->Attribute("dateFormat");
-	std::string strOutFormat = szAttributeText;
 }
 
 void readXMLFile()
@@ -328,9 +259,12 @@ void openURL(String richtung, int schritte)
 
 int main()
 {
+	// Liest XML File ein
 	loadXMLFile();
+	// Entnimmt Infos aus XML
 	readXMLFile();
 
+	// Suchalgorithmus
 	imageProcessing();
 
 	waitKey(0);

@@ -34,9 +34,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\..\..\Documents\Visual Studio 2013\Projects\XMLParser\tinyxml2-master\tinyxml2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Bilder\Korb.png">
@@ -65,6 +62,63 @@
     </Image>
     <Image Include="Bilder\Korb_Rechts.png">
       <Filter>Resource Files\Korb-Tests</Filter>
+    </Image>
+    <Image Include="Korb-Links.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Korb-Rechts.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Korb-Test.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Korb.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Korb_LinksX.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Korb_Mitte.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Korb_Rechts.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Korb_RechtsX.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Korb_Threshold.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Murmeln.JPG">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="TestPic2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="TestPic3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="TestPic4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="TestPic5.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="TestPic6.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Type0V53.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Type3V53.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Type4V55.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="white_klein.png">
+      <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

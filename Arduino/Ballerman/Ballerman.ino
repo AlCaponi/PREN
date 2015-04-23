@@ -12,6 +12,8 @@ int rollingValue=0;
 boolean positionVonRechtsAnfahren = false;
 String orientation;
 int initialSteps;
+boolean firstLoop = true;
+
 //Global stepper variables
 
 //AH_Pololu(int RES, int DIR, int STEP, int MS1, int MS2, int MS3, int SLEEP, int ENABLE, int RESET);
@@ -25,34 +27,46 @@ AH_Pololu shooter_stepper(200,13,12,8,7,6,11,9,10);
 void setup(){
   // Set Baud rate
   Serial.begin(9600);
+  Serial.println("Begin Setup");
   
   // Infrared Initialisation
+  Serial.println("Begin Infrared Init");
   InitInfraredSensor();
+  Serial.println("End Infrared Init");
   
   // Stepper Enginer Initialisation
+  Serial.println("Begin Stepper Init");
   InitStepper(mover_stepper);
-  InitStepper(shooter_stepper
+  InitStepper(shooter_stepper);
+  Serial.println("End Stepper Init");
   
   // Read arguments from Raspberry PI
+  Serial.println("Begin direction Init");
   String startupDirection = "";
   while (startupDirection == ""){
-    if (Serial.available())  {
-        startupDirection = Serial.read():
+    if (Serial.available() > 0)  {
+        startupDirection = Serial.readStringUntil('\n');
         delay(1000);
+        Serial.println("Direction found" + startupDirection);
     }
   }
   orientation = startupDirection;
+  Serial.println("End direction Init");
   
   // Read initial steps from Raspberry PI 
-  String startupSteps = "";
-  while (startupSteps == ""){
-    if (Serial.available())  {
-        startupSteps = Serial.read():
+  Serial.println("Begin Step Init");
+  int startupSteps = 0;
+  while (startupSteps == 0){
+    if (Serial.available() > 0)  {
+        startupSteps = Serial.parseInt();
+         Serial.println("Found Steps " + startupSteps);
         delay(1000);
     }
   }
   initialSteps = startupSteps;
-
+  Serial.println("End Step Init");
+  
+  Serial.println("End Setup");
   
 }
 
@@ -93,27 +107,55 @@ void InitStepper(AH_Pololu stepper){
 //***********************************************MAIN***************************************************/
 
 void loop(){
-  readInfraredSensor();
-  moveStepper(120, "LEFT");
-  fire();
-}
-
-void fire(){
-  // TODO: Herausfinden wie viele Schritte nötigen sind für eine Umdrehung
-  shooter_stepper.move(1000);
-}
-
-// Moves stepper in direction with steps
-void moveStepper(int steps, String dir){
-  if(dir == "LEFT"){
-    mover_stepper.move(steps, BACKWARD);
+  
+  if(firstLoop){
+    moveStepper(initialSteps, orientation);    
+    firstLoop = false;
   }
-  else {
-    mover_stepper.move(steps, FORWARD);
+  if(readInfraredSensor()){
+    fire();
+  }
+  else{
+    moveStepper(10, orientation);
   }
   
 }
 
+void fire(){
+  // TODO: Herausfinden wie viele Schritte nötigen sind für eine Umdrehung
+  int momentanSteps=0;
+  int rampeSteps=5;
+  for(int rampe=60; rampe<=120; rampe+= 5){
+      momentanSteps+=rampeSteps;
+      shooter_stepper.setSpeedRPM(rampe);
+      shooter_stepper.move(rampeSteps);      // move 1000 steps
+    }
+  shooter_stepper.move(2000-momentanSteps);
+}
+
+// Moves stepper in direction with steps
+void moveStepper(int steps, String dir){
+  int momentanSteps=0; //Bereits absolvierte Schritte
+  int rampeSteps=10;   // Anzahl Schritte pro Rampenfunktion
+  for(int rampe=60; rampe<=120;rampe+=5){
+    if(momentanSteps<=steps){ //Abgefangen ob alle Schritte bereits gemacht wurden
+      momentanSteps+=rampeSteps;
+      shooter_stepper.setSpeedRPM(rampe); //Geschwindikeit setzen
+      if(dir=="LEFT"){
+        mover_stepper.move(rampeSteps,BACKWARD);
+        if((rampe==120)&&!(momentanSteps==steps){
+          mover_stepper.move((steps-momentanSteps),BACKWARD);
+        }
+      }
+      else{
+        mover_stepper.move(rampeSteps,FORWARD);
+        if((rampe==120)&&!(momentanSteps==steps){
+          mover_stepper.move((steps-momentanSteps),FORWARD);
+        }
+      }
+    }
+  }
+}
 
 // Reads the current distance from infrared sensor and returns true if basket has been detected
 boolean readInfraredSensor(){
